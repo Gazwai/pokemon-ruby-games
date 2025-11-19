@@ -1,0 +1,13 @@
+<div class="" data-controller="hello">
+  <h1 class="heading">Whats that pokemon</h1>
+  <%= image_tag @pokemon_image, class: "brightness-0 saturate-100 filter" %>
+  <p class="text-3xl font-bold underline"><%= @pokemon_name %></p>
+</div>
+<%= simple_form_for :guess, url: "/games/guess_that_pokemon/guess",
+  method: :post, data: { turbo_frame: "result" } do |f| %>
+  <%= f.input :pokemon_name %>
+  <%= f.hidden_field :correct_answer, value: @pokemon_name %>
+  <%= f.button :submit, "Guess!" %>
+<% end %>
+<div id="guess_result">
+</div>

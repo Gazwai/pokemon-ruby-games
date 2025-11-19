@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  get "pokemons/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -11,5 +10,14 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "pokemons#index"
+  root "games#index"
+  resources :games, only: :index
+
+  # Namespaced game controllers
+  namespace :games do
+    get "guess_that_pokemon", to: "guesses#index"
+    post "guess_that_pokemon/guess", to: "guesses#guess"
+
+    # get "snap", to: "snap#index"
+  end
 end

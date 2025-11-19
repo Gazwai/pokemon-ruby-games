@@ -64,3 +64,4 @@ end
 
 gem "httpx"
 gem "tailwindcss-rails"
+gem "simple_form"
