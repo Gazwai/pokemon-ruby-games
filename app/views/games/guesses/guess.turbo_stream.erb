@@ -1,3 +1,8 @@
 <%= turbo_stream.update "guess_result" do %>
-  <%= render "result", result: @result %>
+  <%= render "result",
+        pokemon_image: @pokemon_image,
+        pokemon_name: @pokemon_name,
+        pokemon_flavor_text: @pokemon_flavor_text,
+        pokemon_types: @pokemon_types,
+        result: @result %>
 <% end %>

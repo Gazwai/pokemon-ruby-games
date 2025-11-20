@@ -1,1 +1,24 @@
-<p><%= result %></p>
+<div class="mb-4">
+  <figure>
+    <img
+      src=<%= pokemon_image %>
+      alt="Pokemon Image"
+      class="w-96 aspect-square <%= result.nil? ? "brightness-0 saturate-100 filter" : "" %>"
+  />
+
+  <% if !result.nil? %>
+    <div class="card card-border w-96 <%= result ? "bg-green-400" : "bg-red-400" %> <%= result.nil? ? "brightness-0 saturate-100 filter" : "" %>">
+      <div class="card-body">
+        <h2 class="card-title"><%= pokemon_name.capitalize %></h2>
+        <p><%= pokemon_flavor_text %></p>
+        <div class="card-actions justify-end">
+          <% pokemon_types.each do |type| %>
+            <div class="badge badge-outline"><%= type.upcase %></div>
+          <% end %>
+        </div>
+        <%= link_to 'Play Again (Enter)', games_guess_that_pokemon_path, class: "btn btn-neutral !flex", data: { turbo: false, controller: "again" } %>
+      </div>
+    </div>
+  <% end %>
+</figure>
+</div>
