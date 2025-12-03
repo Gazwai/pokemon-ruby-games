@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   # Namespaced game controllers
   namespace :games do
-    get "concentrations/index"
+    get "concentrations", to: "concentrations#index"
     get "guess_that_pokemon", to: "guesses#index"
     post "guess_that_pokemon/guess", to: "guesses#guess"
 
