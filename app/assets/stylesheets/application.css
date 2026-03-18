@@ -34,3 +34,21 @@ a {
   text-decoration: none;
   display: inline-block;
 }
+
+.card__content {
+  transform-style: preserve-3d;
+}
+
+.selected,
+.matched {
+  transform: rotateY(.5turn);
+}
+
+.card__front,
+.card__back {
+  backface-visibility: hidden;
+}
+
+.card__back {
+  transform: rotateY(.5turn);
+}

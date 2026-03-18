@@ -1,0 +1,2 @@
+module Games::ConcentrationsHelper
+end

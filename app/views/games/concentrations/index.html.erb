@@ -1,0 +1,18 @@
+<div class="grid grid-cols-3 gap-4" data-controller="concentration">
+  <% @shuffled_cards.each do |card| %>
+    <div class="card">
+      <div class="card__content text-center relative p-20 transition-transform duration-500 text-white font-bold border rounded-lg" data-concentration-target="card" data-attribute-id="<%= card["id"] %>" data-action="click->concentration#check" >
+        <div
+          class="card__front absolute top-0 bottom-0 right-0 left-0 p-8 flex items-center justify-center bg-center bg-contain bg-no-repeat"
+          style="background-image: url('<%= asset_path "pokemon_card_backside.png" %>')"
+        >
+        </div>
+        <div
+          class="card__back absolute top-0 bottom-0 right-0 left-0 p-8 flex items-center justify-center bg-center bg-contain bg-no-repeat"
+          style="background-image: url('<%= card['image'] %>/low.webp')"
+          >
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
