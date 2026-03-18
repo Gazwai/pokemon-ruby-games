@@ -39,7 +39,8 @@ a {
   transform-style: preserve-3d;
 }
 
-.card:hover .card__content {
+.selected,
+.matched {
   transform: rotateY(.5turn);
 }
 

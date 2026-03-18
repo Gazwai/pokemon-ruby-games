@@ -4,10 +4,6 @@
     <div class="card-body">
       <%= simple_form_for :guess, url: "/games/guess_that_pokemon/guess", method: :post, html: { class: "flex gap-4 mb-4"}, data: { turbo_frame: "result", controller: "hello"} do |f| %>
         <%= f.input :user_answer, label: false, required: true, placeholder: "ditto?" %>
-        <%= f.hidden_field :image, value: @pokemon_image %>
-        <%= f.hidden_field :pokemon_name, value: @pokemon_name %>
-        <%= f.hidden_field :types, value: @pokemon_types.join(",") %>
-        <%= f.hidden_field :flavor_text,value: @pokemon_flavor_text %>
         <%= f.button :submit, "Guess!", class: "btn btn-neutral" %>
       <% end %>
       <h2 class="card-title invisible"><%= @pokemon_name.capitalize %></h2>
@@ -19,5 +15,4 @@
       </div>
     </div>
   </div>
-</div>
 </div>

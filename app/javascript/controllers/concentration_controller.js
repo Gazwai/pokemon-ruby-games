@@ -4,38 +4,42 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["card"];
 
+  connect() {
+    this.locked = false;
+  }
+
   check(event) {
-    const selectedCard = this.cardTargets.filter((card) =>
+    const clickedCard = event.currentTarget;
+
+    if (this.locked) return;
+    if (clickedCard.classList.contains("selected")) return;
+    if (clickedCard.classList.contains("matched")) return;
+
+    const selectedCards = this.cardTargets.filter((card) =>
       card.classList.contains("selected")
     );
 
-    switch (selectedCard.length) {
-      case 0:
-        event.currentTarget.classList = "selected";
-        break;
-      case 1:
-        event.currentTarget.classList = "selected";
+    if (selectedCards.length === 0) {
+      clickedCard.classList.add("selected");
+    } else if (selectedCards.length === 1) {
+      clickedCard.classList.add("selected");
 
-        const first = selectedCard[0];
-        const second = event.currentTarget;
+      const first = selectedCards[0];
+      const second = clickedCard;
 
-        if (first.dataset.attributeId === second.dataset.attributeId) {
-          second.classList = "matched";
-          first.classList = "matched";
-        } else {
-          setTimeout((event) => {
-            second.classList = "";
-            first.classList = "";
-          }, 1000);
-        }
-        break;
-
-      default:
-        break;
-    }
-
-    if (selectedCard.length === 0) {
-      event.currentTarget.classList = "selected";
+      if (first.dataset.attributeId === second.dataset.attributeId) {
+        first.classList.add("matched");
+        second.classList.add("matched");
+        first.classList.remove("selected");
+        second.classList.remove("selected");
+      } else {
+        this.locked = true;
+        setTimeout(() => {
+          first.classList.remove("selected");
+          second.classList.remove("selected");
+          this.locked = false;
+        }, 1000);
+      }
     }
   }
 }
