@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.4"
+gem "rails", "~> 8.1.4"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
@@ -60,8 +60,8 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webmock"
 end
 
 gem "httpx"
 gem "tailwindcss-rails"
-gem "simple_form"

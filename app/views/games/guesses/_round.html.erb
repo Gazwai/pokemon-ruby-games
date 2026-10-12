@@ -1,0 +1,50 @@
+<div class="card overflow-hidden bg-base-100 shadow-xl">
+  <figure class="relative block bg-stage">
+    <div class="relative">
+      <%= image_tag "guess_that_pokemon.webp", alt: "Guess That Pokémon!", class: "aspect-[3/1] w-full object-cover object-[50%_20%]" %>
+      <div class="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent to-stage"></div>
+    </div>
+    <div class="flex h-48 items-center justify-center bg-radial from-white/15 to-transparent to-70% pb-4 sm:h-56">
+      <div class="h-full drop-shadow-[0_0_18px_rgb(255_255_255/0.5)]">
+        <%= image_tag pokemon.image_url,
+              alt: correct.nil? ? "A mystery Pokémon's silhouette" : pokemon.name,
+              class: [ "h-full w-auto object-contain", correct.nil? ? "brightness-0" : "motion-safe:animate-reveal" ] %>
+      </div>
+    </div>
+  </figure>
+
+  <div class="card-body items-center gap-4 text-center">
+    <% if correct.nil? %>
+      <h1 class="text-2xl font-black">Who's that Pokémon?</h1>
+      <%= form_with scope: :guess, url: games_guess_that_pokemon_guess_path, class: "join w-full max-w-sm" do |form| %>
+        <%= form.text_field :user_answer, required: true, autofocus: true, autocomplete: "off", spellcheck: false,
+              placeholder: "Type a Pokémon's name", aria: { label: "Your guess" }, class: "input input-lg join-item w-full" %>
+        <%= form.submit "Guess!", class: "btn btn-primary btn-lg join-item", data: { turbo_submits_with: "Checking…" } %>
+      <% end %>
+    <% else %>
+      <span role="status" class="badge badge-lg font-bold <%= correct ? "badge-success" : "badge-error" %>">
+        <%= correct ? "Correct!" : "Not quite!" %>
+      </span>
+      <h1 class="text-3xl font-black">It's <%= pokemon.name %>!</h1>
+
+      <% unless correct %>
+        <p class="text-base-content/70">You guessed “<%= answer %>”.</p>
+      <% end %>
+
+      <div class="flex flex-wrap justify-center gap-2">
+        <% pokemon.types.each do |type| %>
+          <%= type_badge type %>
+        <% end %>
+      </div>
+
+      <% if pokemon.flavor_text %>
+        <p class="max-w-md text-base-content/80 italic">“<%= pokemon.flavor_text %>”</p>
+      <% end %>
+
+      <%= link_to games_guess_that_pokemon_path, class: "btn btn-primary btn-lg",
+            data: { controller: "play-again", action: "keydown.enter@document->play-again#play" } do %>
+        Play again <kbd class="kbd kbd-sm">Enter</kbd>
+      <% end %>
+    <% end %>
+  </div>
+</div>

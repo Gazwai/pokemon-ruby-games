@@ -9,16 +9,12 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
   root "games#index"
   resources :games, only: :index
 
-  # Namespaced game controllers
   namespace :games do
     get "concentrations", to: "concentrations#index"
     get "guess_that_pokemon", to: "guesses#index"
     post "guess_that_pokemon/guess", to: "guesses#guess"
-
-    # get "snap", to: "snap#index"
   end
 end
