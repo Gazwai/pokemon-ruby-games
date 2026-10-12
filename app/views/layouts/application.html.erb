@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="pokedex">
   <head>
-    <title><%= content_for(:title) || "Pokemon Who Is It" %></title>
+    <title><%= content_for(:title) || "Pokémon Games" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -17,9 +17,39 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-  <body>
-    <main class="container h-dvh">
+  <body class="flex min-h-dvh flex-col bg-base-200 text-base-content antialiased">
+    <header class="bg-neutral text-neutral-content shadow-md">
+      <nav class="navbar mx-auto max-w-5xl px-4">
+        <div class="flex-1">
+          <%= link_to root_path, class: "btn btn-ghost gap-2 px-2 text-lg font-black text-neutral-content hover:bg-white/10" do %>
+            <%= image_tag "pokeball.svg", alt: "", class: "size-7" %>
+            Pokémon Games
+          <% end %>
+        </div>
+        <ul class="menu menu-horizontal hidden gap-1 sm:flex">
+          <li><%= link_to "Guess That Pokémon", games_guess_that_pokemon_path, class: "text-neutral-content hover:bg-white/10" %></li>
+          <li><%= link_to "Concentration", games_concentrations_path, class: "text-neutral-content hover:bg-white/10" %></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:py-10">
+      <% flash.each do |type, message| %>
+        <div role="alert" class="alert <%= type == "alert" ? "alert-error" : "alert-info" %> mb-6 shadow-sm">
+          <span><%= message %></span>
+        </div>
+      <% end %>
+
       <%= yield %>
     </main>
+
+    <footer class="footer footer-center p-6 text-sm text-base-content/60">
+      <aside>
+        <p>
+          Pokémon data from <%= link_to "PokéAPI", "https://pokeapi.co", class: "link" %>
+          · Card art from <%= link_to "TCGdex", "https://tcgdex.dev", class: "link" %>
+        </p>
+      </aside>
+    </footer>
   </body>
 </html>

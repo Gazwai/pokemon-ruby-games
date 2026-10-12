@@ -1,42 +1,29 @@
 class Games::GuessesController < ApplicationController
   def index
-    pokemon_id = rand(1..1025)
-    pokemon = FetchPokemon.fetch_pokemon_by_id(pokemon_id)
-    pokemon_species = FetchPokemon.fetch_pokemon_species_by_id(pokemon_id)
+    @pokemon = Pokemon.random
 
-    if pokemon.nil? || pokemon_species.nil?
-      redirect_to root_path, alert: "Could not fetch Pokémon data. Please try again."
-      return
+    if @pokemon
+      session[:pokemon_id] = @pokemon.id
+    else
+      redirect_to root_path, alert: "Couldn't reach the Pokédex. Please try again."
     end
-
-    @pokemon_image = pokemon["sprites"]["other"]["official-artwork"]["front_default"]
-    @pokemon_name = pokemon["name"]
-    @pokemon_types = pokemon["types"].map { |data| data["type"]["name"] }
-    @pokemon_flavor_text = pokemon_species["flavor_text_entries"].find { |data| data["language"]["name"] == "en" }["flavor_text"]
-
-    session[:pokemon_name] = @pokemon_name
-    session[:pokemon_image] = @pokemon_image
-    session[:pokemon_types] = @pokemon_types
-    session[:pokemon_flavor_text] = @pokemon_flavor_text
   end
 
   def guess
-    @pokemon_image = session[:pokemon_image]
-    @pokemon_name = session[:pokemon_name]
-    @pokemon_types = session[:pokemon_types]
-    @pokemon_flavor_text = session[:pokemon_flavor_text]
-    @user_answer = strong_params[:user_answer]
+    pokemon_id = session.delete(:pokemon_id)
+    @pokemon = Pokemon.find(pokemon_id) if pokemon_id
 
-    @result = @user_answer.downcase == @pokemon_name.downcase || @user_answer.downcase == "ditto"
+    unless @pokemon
+      redirect_to games_guess_that_pokemon_path, status: :see_other, notice: "That round has ended. Here's a new Pokémon."
+      return
+    end
+
+    @answer = params.expect(guess: [ :user_answer ])[:user_answer]
+    @correct = @pokemon.correct_guess?(@answer)
 
     respond_to do |format|
       format.turbo_stream
+      format.html { render :index }
     end
-  end
-
-  private
-
-  def strong_params
-    params.require(:guess).permit(:user_answer)
   end
 end

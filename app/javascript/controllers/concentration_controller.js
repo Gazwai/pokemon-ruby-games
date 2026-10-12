@@ -1,45 +1,68 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="concentration"
+const MISMATCH_DELAY = 1000;
+const FLIP_DURATION = 500;
+
 export default class extends Controller {
-  static targets = ["card"];
+  static targets = ["card", "moves", "matches", "victory"];
 
   connect() {
+    this.moves = 0;
+    this.matches = 0;
     this.locked = false;
   }
 
-  check(event) {
-    const clickedCard = event.currentTarget;
+  flip({ currentTarget: card }) {
+    if (this.locked || card.hasAttribute("data-face-up")) return;
 
-    if (this.locked) return;
-    if (clickedCard.classList.contains("selected")) return;
-    if (clickedCard.classList.contains("matched")) return;
+    this.#turnFaceUp(card);
 
-    const selectedCards = this.cardTargets.filter((card) =>
-      card.classList.contains("selected")
+    const unmatched = this.cardTargets.filter(
+      (target) => target.hasAttribute("data-face-up") && !target.hasAttribute("data-matched")
     );
+    if (unmatched.length < 2) return;
 
-    if (selectedCards.length === 0) {
-      clickedCard.classList.add("selected");
-    } else if (selectedCards.length === 1) {
-      clickedCard.classList.add("selected");
+    this.#countMove();
 
-      const first = selectedCards[0];
-      const second = clickedCard;
-
-      if (first.dataset.attributeId === second.dataset.attributeId) {
-        first.classList.add("matched");
-        second.classList.add("matched");
-        first.classList.remove("selected");
-        second.classList.remove("selected");
-      } else {
-        this.locked = true;
-        setTimeout(() => {
-          first.classList.remove("selected");
-          second.classList.remove("selected");
-          this.locked = false;
-        }, 1000);
-      }
+    const [first, second] = unmatched;
+    if (first.dataset.cardId === second.dataset.cardId) {
+      this.#match(first, second);
+    } else {
+      this.locked = true;
+      setTimeout(() => {
+        this.#turnFaceDown(first);
+        this.#turnFaceDown(second);
+        this.locked = false;
+      }, MISMATCH_DELAY);
     }
+  }
+
+  #turnFaceUp(card) {
+    card.toggleAttribute("data-face-up", true);
+    card.setAttribute("aria-label", card.dataset.cardLabel);
+  }
+
+  #turnFaceDown(card) {
+    card.removeAttribute("data-face-up");
+    card.setAttribute("aria-label", "Face-down card");
+  }
+
+  #match(...cards) {
+    cards.forEach((card) => {
+      card.toggleAttribute("data-matched", true);
+      card.setAttribute("aria-disabled", "true");
+    });
+
+    this.matches++;
+    this.matchesTarget.textContent = this.matches;
+
+    if (this.matches === this.cardTargets.length / 2) {
+      setTimeout(() => this.victoryTarget.showModal(), FLIP_DURATION);
+    }
+  }
+
+  #countMove() {
+    this.moves++;
+    this.movesTargets.forEach((target) => (target.textContent = this.moves));
   }
 }

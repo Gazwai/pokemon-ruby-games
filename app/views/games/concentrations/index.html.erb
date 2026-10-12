@@ -1,18 +1,55 @@
-<div class="grid grid-cols-3 gap-4" data-controller="concentration">
-  <% @shuffled_cards.each do |card| %>
-    <div class="card">
-      <div class="card__content text-center relative p-20 transition-transform duration-500 text-white font-bold border rounded-lg" data-concentration-target="card" data-attribute-id="<%= card["id"] %>" data-action="click->concentration#check" >
-        <div
-          class="card__front absolute top-0 bottom-0 right-0 left-0 p-8 flex items-center justify-center bg-center bg-contain bg-no-repeat"
-          style="background-image: url('<%= asset_path "pokemon_card_backside.png" %>')"
-        >
+<% content_for :title, "Concentration" %>
+<% turbo_exempts_page_from_cache %>
+
+<div class="mx-auto max-w-xl" data-controller="concentration">
+  <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-black">Concentration</h1>
+      <p class="text-base-content/70">Find all the matching pairs of <%= @pokemon.name %> cards.</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="stats bg-base-100 shadow-sm">
+        <div class="stat px-4 py-2">
+          <div class="stat-title">Moves</div>
+          <div class="stat-value text-2xl" data-concentration-target="moves">0</div>
         </div>
-        <div
-          class="card__back absolute top-0 bottom-0 right-0 left-0 p-8 flex items-center justify-center bg-center bg-contain bg-no-repeat"
-          style="background-image: url('<%= card['image'] %>/low.webp')"
-          >
+        <div class="stat px-4 py-2">
+          <div class="stat-title">Pairs</div>
+          <div class="stat-value text-2xl"><span data-concentration-target="matches">0</span>/<%= @cards.size / 2 %></div>
         </div>
       </div>
+      <%= link_to "New game", games_concentrations_path, class: "btn btn-secondary" %>
     </div>
-  <% end %>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4">
+    <% @cards.each do |card| %>
+      <button type="button"
+              class="group aspect-[63/88] cursor-pointer rounded-xl perspective-distant transition-transform hover:-translate-y-1 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary data-matched:cursor-default data-matched:hover:translate-y-0"
+              aria-label="Face-down card"
+              data-concentration-target="card"
+              data-card-id="<%= card.id %>"
+              data-card-label="<%= card.name %> (<%= card.id %>)"
+              data-action="concentration#flip">
+        <span class="relative block size-full rounded-xl shadow-md transition-transform duration-500 transform-3d group-data-face-up:rotate-y-180 group-data-matched:ring-4 group-data-matched:ring-success">
+          <%= image_tag "pokemon_card_backside.webp", alt: "", class: "absolute inset-0 size-full rounded-xl backface-hidden" %>
+          <%= image_tag card.image_url, alt: "", class: "absolute inset-0 size-full rounded-xl object-cover backface-hidden rotate-y-180" %>
+        </span>
+      </button>
+    <% end %>
+  </div>
+
+  <dialog class="modal" data-concentration-target="victory">
+    <div class="modal-box text-center">
+      <h2 class="text-2xl font-black">You found them all!</h2>
+      <p class="py-4">
+        All <%= @cards.size / 2 %> pairs matched in <span class="font-bold" data-concentration-target="moves">0</span> moves.
+      </p>
+      <div class="modal-action justify-center">
+        <%= link_to "Play again", games_concentrations_path, class: "btn btn-primary" %>
+        <%= link_to "Back to games", root_path, class: "btn btn-ghost" %>
+      </div>
+    </div>
+  </dialog>
 </div>

@@ -1,18 +1,6 @@
-<div class="flex items-center justify-end bg-center flex-col bg-cover w-dvw h-dvh bg-no-repeat relative" style="background-image: url('<%= asset_path "guess_that_pokemon.png" %>');"  id="guess_result">
-  <%= render 'result', pokemon_image: @pokemon_image, result: @result, pokemon_name: @pokemon_name, pokemon_flavor_text: @pokemon_flavor_text, pokemon_types: @pokemon_types %>
-  <div class="card w-96">
-    <div class="card-body">
-      <%= simple_form_for :guess, url: "/games/guess_that_pokemon/guess", method: :post, html: { class: "flex gap-4 mb-4"}, data: { turbo_frame: "result", controller: "hello"} do |f| %>
-        <%= f.input :user_answer, label: false, required: true, placeholder: "ditto?" %>
-        <%= f.button :submit, "Guess!", class: "btn btn-neutral" %>
-      <% end %>
-      <h2 class="card-title invisible"><%= @pokemon_name.capitalize %></h2>
-      <p class="invisible"><%= @pokemon_flavor_text %></p>
-      <div class="card-actions justify-end invisible">
-        <% @pokemon_types.each do |type| %>
-          <div class="badge badge-outline"><%= type.upcase %></div>
-        <% end %>
-      </div>
-    </div>
-  </div>
+<% content_for :title, "Guess That Pokémon" %>
+<% turbo_exempts_page_from_cache %>
+
+<div id="round" class="mx-auto max-w-xl">
+  <%= render "round", pokemon: @pokemon, answer: @answer, correct: @correct %>
 </div>
